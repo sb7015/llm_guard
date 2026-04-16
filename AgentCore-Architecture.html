@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', Arial, sans-serif;
+    background: #fafafa;
+    width: 1560px;
+    height: 1140px;
+    padding: 28px 32px;
+    position: relative;
+  }
+
+  /* Title */
+  .title {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .title h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    display: inline;
+  }
+  .title .badge {
+    display: inline-block;
+    background: #f59e0b;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+  }
+
+  /* ══ ZONES ══ */
+  .zone {
+    position: absolute;
+    border-radius: 10px;
+  }
+  .zone-label {
+    position: absolute;
+    top: 8px;
+    left: 14px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .zdot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  /* Frontend zone */
+  .zone-fe {
+    top: 58px; left: 28px; width: 860px; height: 110px;
+    border: 2px dashed rgba(249,115,22,0.3);
+    background: rgba(249,115,22,0.02);
+  }
+  .zone-fe .zone-label { color: #ea580c; }
+
+  /* Observability zone */
+  .zone-obs {
+    top: 190px; left: 28px; width: 1080px; height: 890px;
+    border: 2px dashed rgba(27,155,141,0.25);
+    background: rgba(27,155,141,0.02);
+  }
+
+  /* Runtime zone */
+  .zone-rt {
+    top: 220px; left: 44px; width: 1050px; height: 845px;
+    border: 2px dashed rgba(255,153,0,0.35);
+    background: rgba(255,153,0,0.02);
+  }
+
+  /* ══ BOXES ══ */
+  .node {
+    position: absolute;
+    background: #fff;
+    border: 1.5px solid #dde1e8;
+    border-radius: 8px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .node .icon {
+    width: 36px; height: 36px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .node .lbl { font-weight: 700; font-size: 12px; color: #1e293b; }
+  .node .sub { font-size: 9px; color: #6b7280; margin-top: 1px; }
+
+  /* Step badge */
+  .sb {
+    position: absolute; top: -9px; left: -9px;
+    width: 21px; height: 21px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff; z-index: 3;
+  }
+
+  /* ══ AGENT NODES ══ */
+  .agent {
+    position: absolute;
+    background: #fce4ec;
+    border: 1.5px solid #f48fb1;
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+  .agent .nm { font-weight: 700; font-size: 12px; color: #1e293b; }
+  .agent .dt { font-size: 9px; color: #6b7280; font-family: monospace; margin-top: 2px; }
+  .agent .ds { font-size: 9.5px; color: #78909c; font-style: italic; margin-top: 2px; }
+
+  .agent.mem { background: #e8f5e9; border-color: #66bb6a; }
+  .agent.val { background: #fff3e0; border-color: #ffb74d; }
+
+  /* Diamond */
+  .diamond {
+    position: absolute;
+    background: #fff9c4;
+    border: 1.5px solid #f9a825;
+    border-radius: 8px;
+    padding: 8px 14px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* ══ SIDEBAR CARDS ══ */
+  .sidebar-card {
+    position: absolute;
+    background: #fff;
+    border: 1.5px solid #dde1e8;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .sidebar-card h3 {
+    font-size: 12px; font-weight: 700; color: #1e293b;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .svc-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid #eef0f4;
+  }
+  .svc-row:last-child { border-bottom: none; }
+  .svc-ic {
+    width: 30px; height: 30px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 10px; flex-shrink: 0;
+  }
+  .svc-nm { font-weight: 600; font-size: 11px; }
+  .svc-ds { font-size: 9px; color: #6b7280; }
+
+  .pol-box {
+    background: #fef2f2;
+    border: 1.5px solid rgba(220,38,38,0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .card-note { font-size: 9px; color: #6b7280; font-style: italic; margin-top: 6px; }
+  .mem-info { font-size: 10px; color: #6b7280; line-height: 1.7; margin-top: 6px; }
+
+  /* Tags */
+  .tag {
+    display: inline-block; border-radius: 3px;
+    padding: 2px 7px; font-size: 9px; font-weight: 700; margin: 2px;
+  }
+
+  /* Validator output boxes */
+  .val-out {
+    position: absolute;
+    background: #fff;
+    border: 1.5px solid #e2e5ec;
+    border-radius: 6px;
+    padding: 8px 12px;
+    text-align: center;
+  }
+  .val-out .vo-title { font-weight: 700; font-size: 11px; color: #1e293b; }
+  .val-out .vo-desc { font-size: 9px; color: #6b7280; margin-top: 2px; }
+  .val-out .vo-route { font-size: 9px; font-family: monospace; margin-top: 2px; }
+
+  /* Response node */
+  .resp-node {
+    position: absolute;
+    background: #e8f5e9;
+    border: 1.5px solid #66bb6a;
+    border-radius: 8px;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .check-ic {
+    width: 28px; height: 28px; background: #22c55e;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 700;
+  }
+
+  /* Feedback box */
+  .fb-box {
+    position: absolute;
+    padding: 8px 14px;
+    background: rgba(239,68,68,0.03);
+    border: 1px solid rgba(239,68,68,0.15);
+    border-radius: 6px;
+  }
+  .fb-box .fb-title { font-size: 10px; font-weight: 700; color: #ef4444; margin-bottom: 3px; }
+  .fb-box .fb-text { font-size: 9px; color: #6b7280; line-height: 1.6; }
+
+  /* Legend */
+  .legend {
+    position: absolute;
+    display: flex; gap: 14px; align-items: center;
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid #dde1e8;
+    border-radius: 8px;
+    font-size: 9.5px;
+  }
+  .lg { font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; }
+  .lsw {
+    width: 12px; height: 12px; border-radius: 3px;
+    border: 1px solid #dde1e8;
+    display: inline-block; vertical-align: middle; margin-right: 2px;
+  }
+
+  /* SVG overlay */
+  .arrows-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1560px; height: 1140px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Labels on arrows */
+  .flow-label {
+    position: absolute;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: monospace;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<!-- TITLE -->
+<div class="title">
+  <h1>AgentCore Architecture</h1>
+  <span class="badge">Draft</span>
+</div>
+
+<!-- ══ SVG ARROWS ══ -->
+<svg class="arrows-svg" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="ah-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ef4444"/>
+    </marker>
+    <marker id="ah-amber" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f59e0b"/>
+    </marker>
+    <marker id="ah-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#22c55e"/>
+    </marker>
+  </defs>
+
+  <!-- Step 1→2: Web UI → API Gateway -->
+  <line x1="260" y1="118" x2="330" y2="118" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+  <!-- Step 2→3: API Gateway → Identity -->
+  <line x1="510" y1="118" x2="580" y2="118" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Step 3 → Memory Retrieval (down into Runtime) -->
+  <line x1="460" y1="168" x2="460" y2="260" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Step 4→5: Memory → Multi-hop diamond (down) -->
+  <line x1="460" y1="300" x2="460" y2="345" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Step 5 Yes→6: Diamond → Multi-Hop (right) -->
+  <line x1="510" y1="362" x2="590" y2="362" stroke="#22c55e" stroke-width="1.5" marker-end="url(#ah-green)"/>
+  <text x="545" y="355" fill="#22c55e" font-size="10" font-weight="700" font-family="monospace">Yes</text>
+
+  <!-- Step 5 No→7: Diamond → Router (down) -->
+  <line x1="460" y1="385" x2="460" y2="445" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+  <text x="468" y="418" fill="#6b7280" font-size="10" font-weight="700" font-family="monospace">No</text>
+
+  <!-- Multi-Hop refined query down to Router area -->
+  <line x1="680" y1="395" x2="680" y2="425" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="680" y1="425" x2="460" y2="425" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Step 7→8: Router → Retriever -->
+  <line x1="360" y1="480" x2="448" y2="480" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Step 8→9: Retriever → Generator -->
+  <line x1="640" y1="480" x2="720" y2="480" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Step 9→10: Generator → Confidence (down) -->
+  <line x1="810" y1="510" x2="810" y2="560" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Confidence TRUE → Response (left-down) -->
+  <line x1="775" y1="580" x2="520" y2="580" stroke="#22c55e" stroke-width="1.5"/>
+  <line x1="520" y1="580" x2="520" y2="620" stroke="#22c55e" stroke-width="1.5" marker-end="url(#ah-green)"/>
+  <text x="620" y="573" fill="#22c55e" font-size="11" font-weight="700" font-family="monospace">True</text>
+
+  <!-- Confidence FALSE → Validator (down) -->
+  <line x1="810" y1="600" x2="810" y2="640" stroke="#ef4444" stroke-width="1.5" marker-end="url(#ah-red)"/>
+  <text x="820" y="625" fill="#ef4444" font-size="11" font-weight="700" font-family="monospace">False</text>
+
+  <!-- Validator → Generator Issue (back to Generator - red feedback) -->
+  <path d="M 920 670 L 960 670 L 960 480 L 910 480" stroke="#ef4444" stroke-width="1.5" fill="none" marker-end="url(#ah-red)" stroke-dasharray="6,3"/>
+
+  <!-- Validator → Retrieval/Vague (go to UI for more context - amber) -->
+  <path d="M 700 690 L 660 690 L 660 730 L 280 730 L 280 362 L 350 362" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#ah-amber)" stroke-dasharray="6,3"/>
+
+  <!-- Validator → Valid Response (down to UI) -->
+  <line x1="810" y1="710" x2="810" y2="750" stroke="#22c55e" stroke-width="1.5" marker-end="url(#ah-green)"/>
+
+  <!-- Memory Writeback connection -->
+  <line x1="810" y1="790" x2="810" y2="830" stroke="#64748b" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Session ID line from Memory to sidebar -->
+  <line x1="560" y1="278" x2="680" y2="278" stroke="#3ECF8E" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="590" y="272" fill="#3ECF8E" font-size="9" font-weight="600" font-family="monospace">Session ID</text>
+
+  <!-- More context from user arrow to diamond -->
+  <line x1="300" y1="362" x2="420" y2="362" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ah)"/>
+  <text x="290" y="355" fill="#6b7280" font-size="8" text-anchor="end">More context</text>
+  <text x="290" y="365" fill="#6b7280" font-size="8" text-anchor="end">from user</text>
+
+  <!-- Gateway tool call dotted lines from agents to sidebar -->
+  <line x1="900" y1="470" x2="1100" y2="350" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="900" y1="490" x2="1100" y2="370" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+</svg>
+
+<!-- ══ ZONES ══ -->
+<div class="zone zone-fe">
+  <div class="zone-label"><span class="zdot" style="background:#f97316"></span> front end</div>
+</div>
+<div class="zone zone-obs">
+  <div class="zone-label"><span class="zdot" style="background:#1B9B8D"></span> AgentCore Observability — tracing, metrics, logs</div>
+</div>
+<div class="zone zone-rt">
+  <div class="zone-label"><span class="zdot" style="background:#FF9900"></span> AgentCore Runtime — single LangGraph deployment unit</div>
+</div>
+
+<!-- ══ STEP 1: Web UI ══ -->
+<div class="node" style="top:96px; left:110px;">
+  <div class="sb" style="background:#FF9900">1</div>
+  <div class="icon" style="background:#3b82f6;">
+    <svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2" fill="#fff"/><path d="M8 20h8M12 16v4" stroke="#fff" stroke-width="1.5"/></svg>
+  </div>
+  <div><div class="lbl">Web UI</div><div class="sub">Front end application</div></div>
+</div>
+
+<!-- STEP 2: API Gateway -->
+<div class="node" style="top:96px; left:338px;">
+  <div class="sb" style="background:#FF9900">2</div>
+  <div class="icon" style="background:#7c3aed;">
+    <svg width="18" height="18" viewBox="0 0 24 24"><rect x="6" y="5" width="12" height="14" rx="1" fill="#fff"/><path d="M9 9h6M9 12h6M9 15h4" stroke="#7c3aed" stroke-width="1"/></svg>
+  </div>
+  <div><div class="lbl">Amazon<br>API Gateway</div></div>
+</div>
+
+<!-- STEP 3: Identity -->
+<div class="node" style="top:96px; left:590px; border-color:rgba(220,38,38,0.3);">
+  <div class="sb" style="background:#ef4444">3</div>
+  <div class="icon" style="background:#ef4444;">
+    <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="9" r="4" fill="#fff"/><path d="M6 20c0-4 2.5-6 6-6s6 2 6 6" fill="#fff"/></svg>
+  </div>
+  <div><div class="lbl">AgentCore<br>Identity</div><div class="sub">Auth + Session ID</div></div>
+</div>
+
+<!-- STEP 4: Memory Retrieval -->
+<div class="agent mem" style="top:262px; left:350px; width:220px;">
+  <div class="sb" style="background:#22c55e">4</div>
+  <div class="nm">Memory Retrieval</div>
+  <div class="dt">Fetch session context via Session ID</div>
+</div>
+
+<!-- STEP 5: Multi-hop Diamond -->
+<div class="diamond" style="top:348px; left:425px; width:80px;">
+  <div class="sb" style="background:#FF9900">5</div>
+  Need<br>multi-hop?
+</div>
+
+<!-- STEP 6: Multi-Hop Agent -->
+<div class="agent" style="top:338px; left:598px; width:180px;">
+  <div class="sb" style="background:#22c55e">6</div>
+  <div class="nm">Multi-Hop Agent</div>
+  <div class="ds">Consolidates original query and follow-up into refined query</div>
+</div>
+
+<!-- STEP 7: Router Agent -->
+<div class="agent" style="top:450px; left:225px; width:130px;">
+  <div class="sb" style="background:#FF9900">7</div>
+  <div class="nm">Router Agent</div>
+  <div class="dt">Model 1</div>
+  <div class="ds">Classifies query as System, Division, or Definitions</div>
+</div>
+
+<!-- STEP 8: Retriever Agent -->
+<div class="agent" style="top:450px; left:455px; width:180px;">
+  <div class="sb" style="background:#FF9900">8</div>
+  <div class="nm">Retriever Agent</div>
+  <div class="dt">+ Cohere Reranker</div>
+  <div class="ds">Retrieve chunks from Knowledge Base</div>
+</div>
+
+<!-- STEP 9: Generator Agent -->
+<div class="agent" style="top:450px; left:725px; width:180px;">
+  <div class="sb" style="background:#FF9900">9</div>
+  <div class="nm">Generator Agent</div>
+  <div class="dt">Model 2 + Confidence</div>
+  <div class="ds">Generates response with confidence score</div>
+</div>
+
+<!-- STEP 10: Confidence Diamond -->
+<div class="diamond" style="top:562px; left:775px; width:70px;">
+  <div class="sb" style="background:#FF9900">10</div>
+  Conf.<br>≥ 0.78?
+</div>
+
+<!-- STEP 13: Response (True path) -->
+<div class="resp-node" style="top:624px; left:430px;">
+  <div class="sb" style="background:#22c55e">13</div>
+  <div class="check-ic">✓</div>
+  <div><div class="lbl">Response</div><div class="sub">Streamed to user</div></div>
+</div>
+
+<!-- STEP 11: Validator Agent -->
+<div class="agent val" style="top:645px; left:700px; width:220px;">
+  <div class="sb" style="background:#ef4444">11</div>
+  <div class="nm">Validator Agent</div>
+  <div class="dt">Model 2 — root cause analysis</div>
+</div>
+
+<!-- Validator outputs -->
+<div class="val-out" style="top:710px; left:700px; width:220px; border-color:#ffcdd2;">
+  <div class="vo-title">Generator Issue</div>
+  <div class="vo-desc">→ Back to Generator to regenerate</div>
+</div>
+
+<div class="val-out" style="top:755px; left:700px; width:220px; border-color:#ffe0b2;">
+  <div class="vo-title">Retrieval Issue / Vague / Ambiguous</div>
+  <div class="vo-desc">→ Ask user for more context via UI</div>
+</div>
+
+<div class="val-out" style="top:800px; left:700px; width:220px; border-color:#c8e6c9;">
+  <div class="vo-title">Valid Response</div>
+  <div class="vo-desc">→ Show in UI (despite low score)</div>
+</div>
+
+<!-- STEP 12: Memory Writeback -->
+<div class="agent mem" style="top:845px; left:735px; width:150px;">
+  <div class="sb" style="background:#1B9B8D">12</div>
+  <div class="nm">Memory Writeback</div>
+  <div class="dt">Persist session + response</div>
+</div>
+
+<!-- Feedback box -->
+<div class="fb-box" style="top:920px; left:52px; width:620px;">
+  <div class="fb-title">Feedback Loops:</div>
+  <div class="fb-text">
+    <span style="color:#ef4444;font-weight:700">Generator Issue</span> → Validator sends back to <b>Generator Agent</b> → regenerate → full flow again → Validator re-checks<br>
+    <span style="color:#f59e0b;font-weight:700">Retrieval / Vague</span> → Go to UI → ask user for more context → re-enter from <b>Router Agent (Step 7)</b><br>
+    <span style="color:#22c55e;font-weight:700">Valid Response</span> → Show in UI despite low confidence score
+  </div>
+</div>
+
+<!-- ══ SIDEBAR ══ -->
+
+<!-- Gateway Card -->
+<div class="sidebar-card" style="top:58px; left:1130px; width:400px; border-color:rgba(37,99,235,0.3);">
+  <h3><span class="zdot" style="background:#2563eb"></span> AgentCore Gateway — MCP tools</h3>
+  <div class="pol-box">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div class="svc-ic" style="background:#ef4444; width:26px; height:26px; font-size:9px;">☑</div>
+      <div><div class="svc-nm">AgentCore Policy</div><div class="svc-ds">Deterministic guardrails on every tool call</div></div>
+    </div>
+  </div>
+  <div class="svc-row">
+    <div class="svc-ic" style="background:#1e40af;">AI</div>
+    <div><div class="svc-nm">Amazon Bedrock</div><div class="svc-ds">Model 1 + Model 2</div></div>
+  </div>
+  <div class="svc-row">
+    <div class="svc-ic" style="background:#0ea5e9;">Q</div>
+    <div><div class="svc-nm">Amazon OpenSearch</div><div class="svc-ds">Vector + keyword search</div></div>
+  </div>
+  <div class="svc-row">
+    <div class="svc-ic" style="background:#475569;">A</div>
+    <div><div class="svc-nm">Cohere Reranker</div><div class="svc-ds">Re-rank retrieved chunks</div></div>
+  </div>
+  <div class="card-note">All agent tool calls routed through Gateway + Policy</div>
+</div>
+
+<!-- Memory Card -->
+<div class="sidebar-card" style="top:370px; left:1130px; width:400px; border-color:rgba(62,207,142,0.35);">
+  <h3><span class="zdot" style="background:#3ECF8E"></span> AgentCore Memory</h3>
+  <div class="svc-row" style="border:none; padding-bottom:2px;">
+    <div class="svc-ic" style="background:#3ECF8E;">M</div>
+    <div><div class="svc-nm">Session Memory</div><div class="svc-ds">Semantic strategy</div></div>
+  </div>
+  <div class="mem-info">
+    <b>Short-term:</b> conversation context<br>
+    <b>Long-term:</b> user preferences<br>
+    <b>Keyed by:</b> Session ID<br>
+    <b>Haiku</b> tokenization for extraction
+  </div>
+</div>
+
+<!-- Services Card -->
+<div class="sidebar-card" style="top:570px; left:1130px; width:400px;">
+  <h3>Services Used: 6 of 7</h3>
+  <div>
+    <span class="tag" style="background:#fff3e0; border:1px solid #ffcc80;">Runtime</span>
+    <span class="tag" style="background:#e8f5e9; border:1px solid #a5d6a7;">Memory</span>
+    <span class="tag" style="background:#e3f2fd; border:1px solid #90caf9;">Gateway</span>
+    <span class="tag" style="background:#fce4ec; border:1px solid #f48fb1;">Identity</span>
+    <span class="tag" style="background:#ffebee; border:1px solid #ef9a9a;">Policy</span>
+    <span class="tag" style="background:#e0f2f1; border:1px solid #80cbc4;">Observability</span>
+  </div>
+</div>
+
+<!-- ══ LEGEND ══ -->
+<div class="legend" style="bottom:22px; left:28px; width:1505px;">
+  <span class="lg">SERVICES:</span>
+  <span><span class="lsw" style="background:#fff3e0;"></span> Runtime</span>
+  <span><span class="lsw" style="background:#e8f5e9;"></span> Memory</span>
+  <span><span class="lsw" style="background:#e3f2fd;"></span> Gateway</span>
+  <span><span class="lsw" style="background:#fce4ec;"></span> Identity</span>
+  <span><span class="lsw" style="background:#ffebee;"></span> Policy</span>
+  <span><span class="lsw" style="background:#e0f2f1;"></span> Observability</span>
+  <span style="color:#ccc;">|</span>
+  <span class="lg">AGENTS:</span>
+  <span><span class="lsw" style="background:#fce4ec;"></span> Router</span>
+  <span><span class="lsw" style="background:#fce4ec;"></span> Retriever</span>
+  <span><span class="lsw" style="background:#fce4ec;"></span> Generator</span>
+  <span><span class="lsw" style="background:#fff3e0;"></span> Validator</span>
+  <span><span class="lsw" style="background:#fce4ec;"></span> Multi-Hop</span>
+  <span style="color:#ccc;">|</span>
+  <span><svg width="18" height="8"><line x1="0" y1="4" x2="18" y2="4" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,2"/></svg> Feedback (Generator / Multi-Hop)</span>
+  <span><svg width="18" height="8"><line x1="0" y1="4" x2="18" y2="4" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3,2"/></svg> Tool call</span>
+</div>
+
+</body>
+</html>
